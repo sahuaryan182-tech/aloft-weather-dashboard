@@ -138,10 +138,11 @@ flowchart TB
 
 
 
-```markdown
+### Dashboard Overview
 ![Dashboard overview](./screenshots/dashboard.png)
+
+### AI Weather Intelligence Panel
 ![AI weather intelligence panel](./screenshots/ai-panel.png)
-```
 
 To record a demo GIF on Windows: [ScreenToGif](https://www.screentogif.com/) (free) or [ShareX](https://getsharex.com/) both export directly to `.gif`. Save them into a `screenshots/` folder next to this README, then the links above will render automatically on GitHub.
 
