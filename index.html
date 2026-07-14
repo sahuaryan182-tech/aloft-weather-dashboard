@@ -37,7 +37,6 @@
     transition: background 1.2s ease;
   }
 
-  /* ---------- SKY BACKGROUND ---------- */
   #sky{
     position:fixed; inset:0; z-index:-2;
     transition: background 1.5s ease;
@@ -48,7 +47,6 @@
   .raindrop{stroke:rgba(210,230,255,0.55); stroke-width:2; stroke-linecap:round;}
   .snowflake{fill:rgba(255,255,255,0.85);}
 
-  /* ---------- LAYOUT ---------- */
   .wrap{
     max-width:1080px; margin:0 auto; padding:32px 24px 80px;
     position:relative; z-index:1;
@@ -99,7 +97,6 @@
   #suggestions div:last-child{border-bottom:none;}
   #suggestions div:hover{background:rgba(255,255,255,0.08);}
 
-  /* ---------- HERO / MAIN READOUT ---------- */
   .hero{
     display:grid; grid-template-columns: 1.1fr 1fr; gap:24px;
     margin-bottom:28px;
@@ -128,7 +125,6 @@
   .sun-arc-wrap{position:relative; margin-top:22px;}
   .sun-times{display:flex; justify-content:space-between; font-family:'JetBrains Mono'; font-size:0.7rem; color:var(--text-lo); margin-top:4px;}
 
-  /* gauges */
   .gauges{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   .gauge{
     background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px;
@@ -141,7 +137,6 @@
   .gauge-value{font-family:'Space Grotesk'; font-size:1.7rem; font-weight:600; margin-top:8px;}
   .gauge-value span{font-size:1rem; color:var(--text-lo); font-weight:400; font-family:'JetBrains Mono';}
 
-  /* ---------- HOURLY STRIP ---------- */
   .section-label{
     font-family:'JetBrains Mono'; font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase;
     color:var(--text-lo); margin-bottom:12px; display:flex; align-items:center; gap:10px;
@@ -162,7 +157,6 @@
   .hour-temp{font-family:'JetBrains Mono'; font-weight:600; font-size:0.9rem;}
   .hour-rain{font-family:'JetBrains Mono'; font-size:0.62rem; color:#7ec8f0; margin-top:3px; min-height:12px;}
 
-  /* ---------- DAILY ---------- */
   .daily-row{display:grid; grid-template-columns:repeat(7,1fr); gap:10px;}
   @media(max-width:760px){.daily-row{grid-template-columns:repeat(3,1fr);}}
   .day-card{
@@ -186,7 +180,6 @@
   }
   .error{color:#e8785a;}
 
-  /* ---------- AI PANEL ---------- */
   .ai-panel{
     background:linear-gradient(135deg, rgba(126,200,240,0.08), rgba(255,255,255,0.04));
     border:1px solid var(--line); border-radius:var(--radius); padding:24px; margin-bottom:30px;
@@ -254,14 +247,12 @@
     padding:7px 10px; border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; font-size:0.68rem;
   }
 
-  /* ---------- SETTINGS TOGGLE ---------- */
   .settings-btn{
     background:var(--card); border:1px solid var(--line); color:var(--text-lo);
     padding:10px 12px; border-radius:10px; cursor:pointer; font-size:0.95rem;
   }
   .settings-btn:hover{color:var(--text-hi); border-color:var(--accent);}
 
-  /* ---------- PROMINENT AI PANEL ---------- */
   .ai-panel{
     background:
       radial-gradient(circle at 0% 0%, rgba(126,200,240,0.16), transparent 55%),
@@ -273,7 +264,6 @@
     box-shadow:0 0 16px var(--accent);
   }
 
-  /* ---------- SKELETON LOADERS ---------- */
   @keyframes shimmer{
     0%{background-position:-300px 0;}
     100%{background-position:300px 0;}
@@ -294,7 +284,6 @@
   @media(max-width:760px){.skeleton-hero{grid-template-columns:1fr;}}
   .skeleton-panel{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:26px; min-height:280px;}
 
-  /* ---------- ALERT BANNER ---------- */
   .alert-banner{
     display:flex; align-items:flex-start; gap:12px; padding:14px 18px; border-radius:14px;
     margin-bottom:20px; border:1px solid;
@@ -307,7 +296,6 @@
   .alert-text{font-family:'Inter'; font-size:0.8rem; color:var(--text-lo); margin-top:2px;}
   .alert-source{font-family:'JetBrains Mono'; font-size:0.6rem; color:var(--text-lo); margin-top:8px; letter-spacing:0.03em;}
 
-  /* ---------- AQI / UV CARDS ---------- */
   .env-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:30px;}
   @media(max-width:760px){.env-row{grid-template-columns:repeat(2,1fr);}}
   .env-card{
@@ -325,11 +313,9 @@
   .env-tag-moderate{background:rgba(232,163,61,0.2); color:#e8a33d;}
   .env-tag-high{background:rgba(232,120,90,0.22); color:#e8785a;}
 
-  /* ---------- ANOMALY BADGES: distinct colors for heat vs cold ---------- */
   .anomaly-heat{background:rgba(232,120,90,0.22); color:#e8785a;}
   .anomaly-cold{background:rgba(126,200,240,0.2); color:#7ec8f0;}
 
-  /* ---------- CHARTS ---------- */
   .chart-block{background:rgba(0,0,0,0.14); border:1px solid var(--line); border-radius:12px; padding:16px; margin-top:16px;}
   .chart-block h4{
     font-family:'JetBrains Mono'; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase;
@@ -338,7 +324,6 @@
   .chart-canvas-wrap{position:relative; height:220px;}
   .chart-canvas-wrap.tall{height:280px;}
 
-  /* ---------- MAP ---------- */
   .map-panel{
     background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
     margin-bottom:30px;
@@ -495,7 +480,6 @@ function buildSkySvg(isDay, code){
   skySvg.setAttribute('viewBox', `0 0 ${w} ${h}`);
   let inner = '';
 
-  // stars at night
   if(!isDay){
     for(let i=0;i<70;i++){
       const x = Math.random()*w, y = Math.random()*h*0.6;
@@ -505,7 +489,6 @@ function buildSkySvg(isDay, code){
     }
   }
 
-  // clouds for cloudy/rain/snow codes
   if(code>=2){
     for(let i=0;i<5;i++){
       const y = 60 + Math.random()*(h*0.35);
@@ -521,7 +504,6 @@ function buildSkySvg(isDay, code){
     }
   }
 
-  // rain
   if((code>=51&&code<=67)||(code>=80&&code<=82)||code>=95){
     for(let i=0;i<40;i++){
       const x = Math.random()*w;
@@ -532,7 +514,6 @@ function buildSkySvg(isDay, code){
       </line>`;
     }
   }
-  // snow
   if(code>=71&&code<=86){
     for(let i=0;i<35;i++){
       const x = Math.random()*w;
@@ -574,7 +555,6 @@ function render(data){
 
   updateSky(isDay, cur.weather_code);
 
-  // find current hour index in hourly array to slice next 24
   const nowIso = data.current.time;
   let startIdx = hourly.time.findIndex(t => t >= nowIso);
   if(startIdx < 0) startIdx = 0;
@@ -690,7 +670,6 @@ function render(data){
   loadAiInsights(data);
 }
 
-// ---- Weather map (Leaflet + OpenStreetMap tiles, no key required) ----
 let _weatherMapInstance = null;
 let _weatherMapMarker = null;
 
@@ -699,10 +678,6 @@ function initMap(lat, lon, label){
   if(!mapEl){ console.warn('Aloft: #weatherMap container not found in DOM'); return; }
   if(typeof L === 'undefined'){ console.warn('Aloft: Leaflet did not load — map cannot render'); return; }
 
-  // The weather panel's HTML is fully replaced on every refresh, so any
-  // previous Leaflet instance is now bound to a detached, removed DOM
-  // node. Reusing it silently no-ops. Always tear down and recreate
-  // against the current, live container instead.
   if(_weatherMapInstance){
     try{ _weatherMapInstance.remove(); }catch(e){ /* already gone, ignore */ }
     _weatherMapInstance = null;
@@ -717,8 +692,6 @@ function initMap(lat, lon, label){
     }).addTo(_weatherMapInstance);
     tileLayer.on('tileerror', () => console.warn('Aloft: a map tile failed to load (network/firewall may be blocking tile.openstreetmap.org)'));
     _weatherMapMarker = L.marker([lat, lon]).addTo(_weatherMapInstance).bindPopup(label).openPopup();
-    // container size can be measured incorrectly on first paint right after
-    // an innerHTML swap — force Leaflet to remeasure a beat later.
     setTimeout(() => { if(_weatherMapInstance) _weatherMapInstance.invalidateSize(); }, 150);
   }catch(err){
     console.error('Aloft: map initialization failed', err);
@@ -726,9 +699,7 @@ function initMap(lat, lon, label){
   }
 }
 
-// ---- AI backend integration ----
-// Persisted in localStorage so you only have to set your deployed backend URL once.
-let BACKEND_URL = 'http://127.0.0.1:8000';
+let BACKEND_URL = 'https://aloft-ai-backend.onrender.com';
 try{
   const saved = localStorage.getItem('aloft_backend_url');
   if(saved) BACKEND_URL = saved;
@@ -794,7 +765,6 @@ async function loadAiInsights(data){
   const cur = data.current;
   const pop = data.daily.precipitation_probability_max ? data.daily.precipitation_probability_max[0] : 0;
 
-  // env cards + alerts load somewhat independently so one failure doesn't block the rest
   fetch(`${BACKEND_URL}/api/air-quality?lat=${lat}&lon=${lon}`)
     .then(r => r.ok ? r.json() : null).then(renderEnv).catch(()=>renderEnv(null));
 
@@ -821,7 +791,6 @@ async function loadAiInsights(data){
     const amp = predict.ai_model_prediction;
     const ci = amp.tmax_confidence_interval;
 
-    // distinct color for heatwave vs cold snap, not just severity
     let anomalyClass = 'anomaly-none';
     if(anomaly.severity !== 'none'){
       anomalyClass = anomaly.z_score > 0 ? 'anomaly-heat' : 'anomaly-cold';
@@ -929,7 +898,6 @@ function drawFeatureImportanceChart(features){
   });
 }
 
-// ---- search & geocoding UI ----
 const cityInput = document.getElementById('cityInput');
 const suggestions = document.getElementById('suggestions');
 let debounceT;
@@ -981,7 +949,6 @@ document.getElementById('geoBtn').addEventListener('click', ()=>{
   app.innerHTML = '<div class="skeleton skeleton-line w60" style="height:60px;"></div>';
   navigator.geolocation.getCurrentPosition(async pos=>{
     const {latitude, longitude} = pos.coords;
-    // reverse-lookup a friendly name via geocoding search is not directly supported by open-meteo geocoding (it's forward only)
     fetchWeather(latitude, longitude, 'Your Location', `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`);
   }, err=>{
     app.innerHTML = `<div class="error">Location access denied. Search a city instead.</div>`;
@@ -1016,7 +983,6 @@ window.addEventListener('resize', ()=>{
   if(currentWeatherData) buildSkySvg(currentWeatherData.current.is_day===1, currentWeatherData.current.weather_code);
 });
 
-// initial load — try geolocation, fallback to a default city
 (function init(){
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(pos=>{
