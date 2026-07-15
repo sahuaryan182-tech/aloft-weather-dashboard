@@ -73,6 +73,7 @@ CACHE_TTL_SECONDS = 45 * 60  # 45 minutes — roughly matches how often forecast
 # Caching the raw fetch (not just the final /api/predict payload) means
 # only the first caller per location actually hits the network.
 _generic_cache = {}
+_stale_fallback = {}  # never-expiring last-known-good data, per cache key
 
 
 def _generic_cache_get(key, ttl):
@@ -84,6 +85,15 @@ def _generic_cache_get(key, ttl):
 
 def _generic_cache_set(key, data):
     _generic_cache[key] = {"ts": time.time(), "data": data}
+    # also keep a copy that never expires on its own TTL, purely as an
+    # emergency fallback for when Open-Meteo is rate-limiting us and a
+    # fresh fetch fails — better to serve slightly stale real data than
+    # nothing at all.
+    _stale_fallback[key] = data
+
+
+def _stale_fallback_get(key):
+    return _stale_fallback.get(key)
 
 
 def _cache_get(key):
@@ -176,6 +186,9 @@ def fetch_history(lat: float, lon: float, years: int = HISTORY_YEARS):
     }
     r = _get_with_retry(ARCHIVE_URL, params)
     if r.status_code != 200:
+        stale = _stale_fallback_get(cache_key)
+        if stale is not None:
+            return stale
         _raise_for_bad_status(r, "Historical weather service")
     data = r.json()
     _generic_cache_set(cache_key, data)
@@ -205,6 +218,9 @@ def fetch_recent(lat: float, lon: float, past_days: int = 5):
     }
     r = _get_with_retry(FORECAST_URL, params)
     if r.status_code != 200:
+        stale = _stale_fallback_get(cache_key)
+        if stale is not None:
+            return stale
         _raise_for_bad_status(r, "Recent weather data service")
     data = r.json()
     _generic_cache_set(cache_key, data)
@@ -231,6 +247,9 @@ def fetch_forecast(lat: float, lon: float):
     }
     r = _get_with_retry(FORECAST_URL, params)
     if r.status_code != 200:
+        stale = _stale_fallback_get(cache_key)
+        if stale is not None:
+            return stale
         _raise_for_bad_status(r, "Forecast service")
     data = r.json()
     _generic_cache_set(cache_key, data)
