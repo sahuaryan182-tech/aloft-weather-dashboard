@@ -110,15 +110,43 @@ RECENT_CACHE_TTL = 20 * 60         # 20 minutes — "recent actual" days update 
 
 def _get_with_retry(url, params, timeout=30, retries=2):
     """GET with a longer timeout and a couple of retries, so one slow
-    response from the weather API doesn't take down the whole request."""
+    response from the weather API doesn't take down the whole request.
+
+    429 (rate limited) gets special handling: Render's free tier shares
+    outbound IPs across many unrelated customers, so Open-Meteo's rate
+    limit can trip even from light usage on our side. These are
+    self-clearing within seconds, so we back off and retry rather than
+    failing immediately."""
     last_err = None
+    r = None
     for attempt in range(retries + 1):
         try:
             r = requests.get(url, params=params, timeout=timeout)
+            if r.status_code == 429:
+                if attempt < retries:
+                    time.sleep(2 * (attempt + 1))  # 2s, then 4s
+                    continue
+                return r  # out of retries, let caller report the 429
             return r
         except requests.exceptions.RequestException as e:
             last_err = e
+    if r is not None:
+        return r
     raise HTTPException(504, f"Weather service timed out after {retries + 1} attempts: {last_err}")
+
+
+def _raise_for_bad_status(r, service_name):
+    """Turn a non-200 upstream response into an accurate, honest error
+    instead of a generic 'unavailable' — rate limiting is transient and
+    self-clearing, a genuine outage is not, and the person deserves to
+    know which one they're looking at."""
+    if r.status_code == 429:
+        raise HTTPException(
+            503,
+            f"{service_name} is temporarily rate-limited (this can happen on shared free-tier "
+            f"hosting) — please wait ~30 seconds and try again."
+        )
+    raise HTTPException(502, f"{service_name} unavailable (status {r.status_code})")
 
 
 def fetch_history(lat: float, lon: float, years: int = HISTORY_YEARS):
@@ -148,7 +176,7 @@ def fetch_history(lat: float, lon: float, years: int = HISTORY_YEARS):
     }
     r = _get_with_retry(ARCHIVE_URL, params)
     if r.status_code != 200:
-        raise HTTPException(502, f"Historical weather service unavailable (status {r.status_code})")
+        _raise_for_bad_status(r, "Historical weather service")
     data = r.json()
     _generic_cache_set(cache_key, data)
     return data
@@ -177,7 +205,7 @@ def fetch_recent(lat: float, lon: float, past_days: int = 5):
     }
     r = _get_with_retry(FORECAST_URL, params)
     if r.status_code != 200:
-        raise HTTPException(502, f"Recent weather data unavailable (status {r.status_code})")
+        _raise_for_bad_status(r, "Recent weather data service")
     data = r.json()
     _generic_cache_set(cache_key, data)
     return data
@@ -203,7 +231,7 @@ def fetch_forecast(lat: float, lon: float):
     }
     r = _get_with_retry(FORECAST_URL, params)
     if r.status_code != 200:
-        raise HTTPException(502, f"Forecast service unavailable (status {r.status_code})")
+        _raise_for_bad_status(r, "Forecast service")
     data = r.json()
     _generic_cache_set(cache_key, data)
     return data
@@ -596,7 +624,7 @@ def air_quality(lat: float = Query(...), lon: float = Query(...)):
     }
     aqi_r = _get_with_retry(AIR_QUALITY_URL, aqi_params)
     if aqi_r.status_code != 200:
-        raise HTTPException(502, "Air quality service unavailable")
+        _raise_for_bad_status(aqi_r, "Air quality service")
     aqi = aqi_r.json().get("current", {})
 
     uv_params = {
