@@ -632,10 +632,18 @@ def advisory(
     return {"heat_index_c": round(hi, 1), "advisories": advisories}
 
 
+AQI_CACHE_TTL = 20 * 60  # 20 minutes
+
+
 @app.get("/api/air-quality")
 def air_quality(lat: float = Query(...), lon: float = Query(...)):
     """Real air quality (US AQI, PM2.5, PM10) from Open-Meteo's Air Quality
     API, plus UV index from the standard forecast API. Both free, no key."""
+    cache_key = ("air_quality", round(lat, 2), round(lon, 2))
+    cached = _generic_cache_get(cache_key, AQI_CACHE_TTL)
+    if cached is not None:
+        return cached
+
     aqi_params = {
         "latitude": lat, "longitude": lon,
         "current": "us_aqi,pm2_5,pm10,ozone,nitrogen_dioxide",
@@ -643,6 +651,9 @@ def air_quality(lat: float = Query(...), lon: float = Query(...)):
     }
     aqi_r = _get_with_retry(AIR_QUALITY_URL, aqi_params)
     if aqi_r.status_code != 200:
+        stale = _stale_fallback_get(cache_key)
+        if stale is not None:
+            return stale
         _raise_for_bad_status(aqi_r, "Air quality service")
     aqi = aqi_r.json().get("current", {})
 
@@ -680,11 +691,13 @@ def air_quality(lat: float = Query(...), lon: float = Query(...)):
     else:
         uv_label = "Extreme"
 
-    return {
+    result = {
         "us_aqi": us_aqi, "aqi_label": aqi_label, "aqi_level": aqi_level,
         "pm2_5": aqi.get("pm2_5"), "pm10": aqi.get("pm10"),
         "uv_index_max": uv_max, "uv_label": uv_label,
     }
+    _generic_cache_set(cache_key, result)
+    return result
 
 
 @app.get("/api/alerts")
